@@ -36,6 +36,26 @@ Resources:
             Headers:
              - Authorization
             ReauthorizeEvery: 300 # seconds
+    ThalaivarDailyNotifyFunction:
+     Type: AWS::Serverless::Function
+     Properties:
+       CodeUri: thalaivargal_notify/
+       Handler: notify.notify_handler
+       # Role: !Ref IamRole
+       Timeout: 300
+       Events:
+         NotifyApi:
+           Type: Api
+           Properties:
+             RestApiId: !Ref QuotesNotifyApi
+             Path: /notify
+             Method: ANY
+         NotifyAdminApi:
+           Type: Api
+           Properties:
+             RestApiId: !Ref QuotesNotifyApi
+             Path: /quotes-api/notify
+             Method: ANY        
     DailyScheduleNotifyFunction:
      Type: AWS::Serverless::Function
      Properties:
