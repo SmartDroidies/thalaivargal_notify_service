@@ -64,55 +64,55 @@ Resources:
 #             RestApiId: !Ref QuotesNotifyApi
 #             Path: /quotes-api/notify
 #             Method: ANY
-    DailyScheduleNotifyFunction:
-     Type: AWS::Serverless::Function
-     Properties:
-       CodeUri: thalaivargal_notify/
-       Handler: notify.notify_schedule_handler
-       Role: !GetAtt ThalaivargalApiIamRole.Arn
-       Timeout: 60
-       Events:
-         MorningNotifyScheduled:
-           Type: Schedule
-           Properties:
-            Name: QuotesMorningSchedule
-            Description: Scheduled for daily morning quote
-            Enabled: True
-            Input: '{ "topic": "morning","timing" : "morning"}'
-            Schedule: cron(00 03 ? * * *)
-            #Schedule: 'rate(2 minutes)'
-         NoonNotifyScheduled:
-           Type: Schedule
-           Properties:
-            Name: QuotesNoonSchedule
-            Description: Scheduled for daily noon quote
-            Enabled: True
-            Input: '{ "topic": "noon","timing" : "noon"}'
-            Schedule: cron(00 07 ? * * *)
-         EveningNotifyScheduled:
-           Type: Schedule
-           Properties:
-            Name: QuotesEveningSchedule
-            Description: Scheduled for daily evening quote
-            Enabled: True
-            Input: '{ "topic": "evening","timing" : "evening"}'
-            Schedule: cron(00 11 ? * * *)
-         EventNotifyScheduled:
-           Type: Schedule
-           Properties:
-            Name: TodayEventSchedule
-            Description: Scheduled for current day event
-            Enabled: False
-            Input: '{ "topic": "general","event" : "today"}'
-            Schedule: cron(30 00 ? * * *)
-         EventAdvNotifyScheduled:
-           Type: Schedule
-           Properties:
-            Name: TomorrowEventSchedule
-            Description: Scheduled for next day event
-            Enabled: False
-            Input: '{ "topic": "general","event" : "tomorrow"}'
-            Schedule: cron(30 12 ? * * *)
+  DailyScheduleNotifyFunction:
+   Type: AWS::Serverless::Function
+   Properties:
+     CodeUri: thalaivargal_notify/
+     Handler: notify.notify_schedule_handler
+     Role: !GetAtt ThalaivargalApiIamRole.Arn
+     Timeout: 60
+     Events:
+       MorningNotifyScheduled:
+         Type: Schedule
+         Properties:
+          Name: QuotesMorningSchedule
+          Description: Scheduled for daily morning quote
+          Enabled: True
+          Input: '{ "topic": "morning","timing" : "morning"}'
+          Schedule: cron(00 03 ? * * *)
+          #Schedule: 'rate(2 minutes)'
+       NoonNotifyScheduled:
+         Type: Schedule
+         Properties:
+          Name: QuotesNoonSchedule
+          Description: Scheduled for daily noon quote
+          Enabled: True
+          Input: '{ "topic": "noon","timing" : "noon"}'
+          Schedule: cron(00 07 ? * * *)
+       EveningNotifyScheduled:
+         Type: Schedule
+         Properties:
+          Name: QuotesEveningSchedule
+          Description: Scheduled for daily evening quote
+          Enabled: True
+          Input: '{ "topic": "evening","timing" : "evening"}'
+          Schedule: cron(00 11 ? * * *)
+       EventNotifyScheduled:
+         Type: Schedule
+         Properties:
+          Name: TodayEventSchedule
+          Description: Scheduled for current day event
+          Enabled: False
+          Input: '{ "topic": "general","event" : "today"}'
+          Schedule: cron(30 00 ? * * *)
+       EventAdvNotifyScheduled:
+         Type: Schedule
+         Properties:
+          Name: TomorrowEventSchedule
+          Description: Scheduled for next day event
+          Enabled: False
+          Input: '{ "topic": "general","event" : "tomorrow"}'
+          Schedule: cron(30 12 ? * * *)
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
