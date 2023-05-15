@@ -2,11 +2,9 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Thalaivargal quotes notify service
 
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 3
-    MemorySize: 128
+    Runtime: python3.8
 
 Resources:
   ThalaivargalNotifyIamRole:
@@ -22,102 +20,52 @@ Resources:
       RoleName: ThalaivargalNotifyIamRole
       Description: Role used for Thalaivargal Notify Lambda function
       ManagedPolicyArns:
-#        - arn:aws:iam::aws:policy/AmazonS3FullAccess
         - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
-#   QuotesNotifyAuthFunction:
-#     Type: AWS::Serverless::Function
-#       Properties:
-#        CodeUri: thalaivargal_notify/
-#        Handler: authorizer.handler
-#        Role: !Ref IamRole
-#  QuotesNotifyApi:
-#    Type: AWS::Serverless::Api
-#    Properties:
-#      StageName: Prod
-#      Auth:
-#        DefaultAuthorizer: QuotesNotifyLambdaAuthorizer
-#        Authorizers:
-#         QuotesNotifyLambdaAuthorizer:
-#           FunctionPayloadType: TOKEN
-#           FunctionArn: !GetAtt QuotesNotifyLambdaAuthorizer.Arn
-#           Identity:
-#            Headers:
-#             - Authorization
-#            ReauthorizeEvery: 300 # seconds
-#    ThalaivarDailyNotifyFunction:
-#     Type: AWS::Serverless::Function
-#     Properties:
-#       CodeUri: thalaivargal_notify/
-#       Handler: notify.notify_handler
-#       # Role: !Ref IamRole
-#       Timeout: 300
-#       Events:
-#         NotifyApi:
-#           Type: Api
-#           Properties:
-#             RestApiId: !Ref QuotesNotifyApi
-#             Path: /notify
-#             Method: ANY
-#         NotifyAdminApi:
-#           Type: Api
-#           Properties:
-#             RestApiId: !Ref QuotesNotifyApi
-#             Path: /quotes-api/notify
-#             Method: ANY
   DailyScheduleNotifyFunction:
-   Type: AWS::Serverless::Function
-   Properties:
-     CodeUri: thalaivargal_notify/
-     Handler: notify.notify_schedule_handler
-     Role: !GetAtt ThalaivargalApiIamRole.Arn
-     Timeout: 60
-     Events:
-       MorningNotifyScheduled:
-         Type: Schedule
-         Properties:
-          Name: QuotesMorningSchedule
-          Description: Scheduled for daily morning quote
-          Enabled: True
-          Input: '{ "topic": "morning","timing" : "morning"}'
-          Schedule: cron(00 03 ? * * *)
-          #Schedule: 'rate(2 minutes)'
-       NoonNotifyScheduled:
-         Type: Schedule
-         Properties:
-          Name: QuotesNoonSchedule
-          Description: Scheduled for daily noon quote
-          Enabled: True
-          Input: '{ "topic": "noon","timing" : "noon"}'
-          Schedule: cron(00 07 ? * * *)
-       EveningNotifyScheduled:
-         Type: Schedule
-         Properties:
-          Name: QuotesEveningSchedule
-          Description: Scheduled for daily evening quote
-          Enabled: True
-          Input: '{ "topic": "evening","timing" : "evening"}'
-          Schedule: cron(00 11 ? * * *)
-       EventNotifyScheduled:
-         Type: Schedule
-         Properties:
-          Name: TodayEventSchedule
-          Description: Scheduled for current day event
-          Enabled: False
-          Input: '{ "topic": "general","event" : "today"}'
-          Schedule: cron(30 00 ? * * *)
-       EventAdvNotifyScheduled:
-         Type: Schedule
-         Properties:
-          Name: TomorrowEventSchedule
-          Description: Scheduled for next day event
-          Enabled: False
-          Input: '{ "topic": "general","event" : "tomorrow"}'
-          Schedule: cron(30 12 ? * * *)
-
-Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  QuotesNotifyApi:
-    Description: "API Gateway endpoint URL for Prod stage for function"
-    Value: !Sub "https://${QuotesNotifyApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: thalaivargal_notify/
+      Handler: notify.notify_schedule_handler
+      Role: !GetAtt ThalaivargalNotifyIamRole.Arn
+      Events:
+        MorningNotifyScheduled:
+          Type: Schedule
+          Properties:
+            Name: QuotesMorningSchedule
+            Description: Scheduled for daily morning quote
+            Enabled: True
+            Input: '{ "topic": "morning","timing" : "morning"}'
+            Schedule: cron(00 03 ? * * *)
+#            Schedule: 'rate(2 minutes)'
+        NoonNotifyScheduled:
+          Type: Schedule
+          Properties:
+            Name: QuotesNoonSchedule
+            Description: Scheduled for daily noon quote
+            Enabled: True
+            Input: '{ "topic": "noon","timing" : "noon"}'
+            Schedule: cron(00 07 ? * * *)
+        EveningNotifyScheduled:
+          Type: Schedule
+          Properties:
+            Name: QuotesEveningSchedule
+            Description: Scheduled for daily evening quote
+            Enabled: True
+            Input: '{ "topic": "evening","timing" : "evening"}'
+            Schedule: cron(00 11 ? * * *)
+        EventNotifyScheduled:
+          Type: Schedule
+          Properties:
+            Name: TodayEventSchedule
+            Description: Scheduled for current day event
+            Enabled: False
+            Input: '{ "topic": "general","event" : "today"}'
+            Schedule: cron(30 00 ? * * *)
+        EventAdvNotifyScheduled:
+          Type: Schedule
+          Properties:
+            Name: TomorrowEventSchedule
+            Description: Scheduled for next day event
+            Enabled: False
+            Input: '{ "topic": "general","event" : "tomorrow"}'
+            Schedule: cron(30 12 ? * * *)
