@@ -10,9 +10,9 @@ env:
   SAM_TEMPLATE: template.yaml
   DEPLOY_REGION: ap-south-1
   PIPELINE_EXECUTION_ROLE: arn:aws:iam::007281893211:role/aws-sam-cli-managed-PipelineExecutionRole-ThalaivarQuotes
-  # ARTIFACTS_BUCKET: aws-sam-cli-managed-thalaivargalquotes-artifactsbucket
-  # CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::007281893211:role/aws-sam-cli-managed-CloudFormationExecutionRole-ThalaivarQuotes
-  DEV_STACK_NAME: thalaivargal-notify-quotes-api
+  ARTIFACTS_BUCKET: aws-sam-cli-managed-thalaivargalquotes-artifactsbucket
+  CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::007281893211:role/aws-sam-cli-managed-CloudFormationExecutionRole-ThalaivarQuotes
+  STACK_NAME: thalaivargal-notify-service
 
 jobs:
   build-and-deploy:
@@ -30,16 +30,16 @@ jobs:
           aws-secret-access-key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.DEPLOY_REGION }}
           role-to-assume: ${{ env.PIPELINE_EXECUTION_ROLE }}
-          role-session-name: dev-deployment
+          role-session-name: prod-deployment
           role-duration-seconds: 3600
           role-skip-session-tagging: true
-#
-#      - name: Deploy to feature stack in the dev account
-#        shell: bash
-#        run: |
-#          sam deploy --stack-name ${DEV_STACK_NAME} \
-#            --capabilities CAPABILITY_NAMED_IAM \
-#            --region ${DEPLOY_REGION} \
-#            --s3-bucket ${ARTIFACTS_BUCKET} \
-#            --no-fail-on-empty-changeset \
-#            --role-arn ${CLOUDFORMATION_EXECUTION_ROLE}
+
+      - name: Deploy to prod account
+        shell: bash
+        run: |
+          sam deploy --stack-name ${STACK_NAME} \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --region ${DEPLOY_REGION} \
+            --s3-bucket ${ARTIFACTS_BUCKET} \
+            --no-fail-on-empty-changeset \
+            --role-arn ${CLOUDFORMATION_EXECUTION_ROLE}
