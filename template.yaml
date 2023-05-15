@@ -1,9 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: >
-  thalaivargal_notify_service
-
-  Sample SAM Template for thalaivargal_notify_service
+Description: Thalaivargal quotes notify service
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -12,56 +9,67 @@ Globals:
     MemorySize: 128
 
 Resources:
-#  IamRole:
-#     Type: String
-#     Default: arn:aws:iam::007281893211:role/TamilQuoteFunctionIamRole
-#     Description: Role to use
+  ThalaivargalNotifyIamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: 'sts:AssumeRole'
+      RoleName: ThalaivargalNotifyIamRole
+      Description: Role used for Thalaivargal Notify Lambda function
+      ManagedPolicyArns:
+#        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
 #   QuotesNotifyAuthFunction:
 #     Type: AWS::Serverless::Function
 #       Properties:
 #        CodeUri: thalaivargal_notify/
 #        Handler: authorizer.handler
 #        Role: !Ref IamRole
-  QuotesNotifyApi:
-    Type: AWS::Serverless::Api
-    Properties:
-      StageName: Prod
-      Auth:
-        DefaultAuthorizer: QuotesNotifyLambdaAuthorizer
-        Authorizers:
-         QuotesNotifyLambdaAuthorizer:
-           FunctionPayloadType: TOKEN
-           FunctionArn: !GetAtt QuotesNotifyLambdaAuthorizer.Arn
-           Identity:
-            Headers:
-             - Authorization
-            ReauthorizeEvery: 300 # seconds
-    ThalaivarDailyNotifyFunction:
-     Type: AWS::Serverless::Function
-     Properties:
-       CodeUri: thalaivargal_notify/
-       Handler: notify.notify_handler
-       # Role: !Ref IamRole
-       Timeout: 300
-       Events:
-         NotifyApi:
-           Type: Api
-           Properties:
-             RestApiId: !Ref QuotesNotifyApi
-             Path: /notify
-             Method: ANY
-         NotifyAdminApi:
-           Type: Api
-           Properties:
-             RestApiId: !Ref QuotesNotifyApi
-             Path: /quotes-api/notify
-             Method: ANY        
+#  QuotesNotifyApi:
+#    Type: AWS::Serverless::Api
+#    Properties:
+#      StageName: Prod
+#      Auth:
+#        DefaultAuthorizer: QuotesNotifyLambdaAuthorizer
+#        Authorizers:
+#         QuotesNotifyLambdaAuthorizer:
+#           FunctionPayloadType: TOKEN
+#           FunctionArn: !GetAtt QuotesNotifyLambdaAuthorizer.Arn
+#           Identity:
+#            Headers:
+#             - Authorization
+#            ReauthorizeEvery: 300 # seconds
+#    ThalaivarDailyNotifyFunction:
+#     Type: AWS::Serverless::Function
+#     Properties:
+#       CodeUri: thalaivargal_notify/
+#       Handler: notify.notify_handler
+#       # Role: !Ref IamRole
+#       Timeout: 300
+#       Events:
+#         NotifyApi:
+#           Type: Api
+#           Properties:
+#             RestApiId: !Ref QuotesNotifyApi
+#             Path: /notify
+#             Method: ANY
+#         NotifyAdminApi:
+#           Type: Api
+#           Properties:
+#             RestApiId: !Ref QuotesNotifyApi
+#             Path: /quotes-api/notify
+#             Method: ANY
     DailyScheduleNotifyFunction:
      Type: AWS::Serverless::Function
      Properties:
        CodeUri: thalaivargal_notify/
        Handler: notify.notify_schedule_handler
-       Role: !Ref IamRole
+       Role: !GetAtt ThalaivargalApiIamRole.Arn
        Timeout: 60
        Events:
          MorningNotifyScheduled:
