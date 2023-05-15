@@ -1,0 +1,45 @@
+name: Thalaivargal Quotes Notification Service
+
+on:
+  push:
+    branches:
+      - 'main'
+env:
+  PIPELINE_USER_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  PIPELINE_USER_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  SAM_TEMPLATE: template.yaml
+  DEPLOY_REGION: ap-south-1
+  # PIPELINE_EXECUTION_ROLE: arn:aws:iam::007281893211:role/aws-sam-cli-managed-PipelineExecutionRole-ThalaivarQuotes
+  # ARTIFACTS_BUCKET: aws-sam-cli-managed-thalaivargalquotes-artifactsbucket
+  # CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::007281893211:role/aws-sam-cli-managed-CloudFormationExecutionRole-ThalaivarQuotes
+  DEV_STACK_NAME: thalaivargal-notify-quotes-api
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - uses: aws-actions/setup-sam@v1
+      - run: sam build --template ${SAM_TEMPLATE} --use-container
+
+#      - name: Assume the pipeline user role
+#        uses: aws-actions/configure-aws-credentials@v1
+#        with:
+#          aws-access-key-id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}
+#          aws-region: ${{ env.DEPLOY_REGION }}
+#          role-to-assume: ${{ env.PIPELINE_EXECUTION_ROLE }}
+#          role-session-name: dev-deployment
+#          role-duration-seconds: 3600
+#          role-skip-session-tagging: true
+#
+#      - name: Deploy to feature stack in the dev account
+#        shell: bash
+#        run: |
+#          sam deploy --stack-name ${DEV_STACK_NAME} \
+#            --capabilities CAPABILITY_NAMED_IAM \
+#            --region ${DEPLOY_REGION} \
+#            --s3-bucket ${ARTIFACTS_BUCKET} \
+#            --no-fail-on-empty-changeset \
+#            --role-arn ${CLOUDFORMATION_EXECUTION_ROLE}

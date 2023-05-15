@@ -1,0 +1,2 @@
+admin_token = "fA4U6XMH2Vw:APA91bFzGQVmat4lXxVTVcOVZK18RSmvg-ocC0HRCYEsU4DKakFKywygD-f4vaHRCIGEZAMPdLUFgBbo7RXCCVXv214tXtWAFYPCLGpxX_z33j9lE_ncGHYdMWTxl5kKTDgI7dW4G3Bz"
+notify_token = "daily"
