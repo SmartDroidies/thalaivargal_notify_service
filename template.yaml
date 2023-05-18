@@ -39,8 +39,8 @@ Resources:
             Description: Scheduled for daily morning quote
             Enabled: True
             Input: '{ "topic": "morning","timing" : "morning"}'
-            Schedule: cron(00 03 ? * * *)
-#            Schedule: 'rate(2 minutes)'
+#            Schedule: cron(00 03 ? * * *)
+            Schedule: 'rate(2 minutes)'
         NoonNotifyScheduled:
           Type: Schedule
           Properties:
