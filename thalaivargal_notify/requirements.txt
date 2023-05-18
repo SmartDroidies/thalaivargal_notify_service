@@ -1,2 +1,6 @@
 requests
+pymysql
+pyjwt
+firebase_admin
+grpcio==1.27.2
 urllib3<2
