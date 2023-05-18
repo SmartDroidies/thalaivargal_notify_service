@@ -5,6 +5,9 @@ Description: Thalaivargal quotes notify service
 Globals:
   Function:
     Runtime: python3.8
+    Environment:
+      Variables:
+        IMAGE_WEBSITE: "http://www.smartdroidies.com/"
 
 Resources:
   ThalaivargalNotifyIamRole:
