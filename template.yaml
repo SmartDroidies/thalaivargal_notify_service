@@ -21,6 +21,10 @@ Resources:
       Description: Role used for Thalaivargal Notify Lambda function
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+  ThalaivargalNotifyLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      RetentionInDays: 7
   DailyScheduleNotifyFunction:
     Type: AWS::Serverless::Function
     Properties:
