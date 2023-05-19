@@ -258,9 +258,8 @@ def trigger_topic_notification(topic, notification, data):
         data=data,
         topic=topic
     )
-    # response = messaging.send(message)
-    # return 'Successfully sent message to topic:', response
-    return 'Successfully sent message to topic:', message
+    response = messaging.send(message)
+    return 'Successfully sent message to topic:', response
 
 
 def notify_handler(event, context):
@@ -280,7 +279,7 @@ def notify_handler(event, context):
 
 
 def notify_schedule_handler(event, context):
-    print("Received notify event: " + json.dumps(event, indent=2))
+    # print("Received notify event: " + json.dumps(event, indent=2))
     result = notify_quote_param(event)
     print(result)
     return result
